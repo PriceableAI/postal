@@ -23,7 +23,6 @@
 #
 
 class Route < ApplicationRecord
-
   MODES = %w[Endpoint Accept Hold Bounce Reject].freeze
   SPAM_MODES = %w[Mark Quarantine Fail].freeze
   ENDPOINT_TYPES = %w[SMTPEndpoint HTTPEndpoint AddressEndpoint].freeze
@@ -49,16 +48,19 @@ class Route < ApplicationRecord
   after_save :save_additional_route_endpoints
 
   random_string :token, type: :chars, length: 8, unique: true
+  attr_accessor :_endpoint
 
   def return_path?
     name == "__returnpath__"
   end
 
   def description
-    if return_path?
-      "Return Path"
-    else
+    return "Return Path" if return_path?
+
+    if domain.present?
       "#{name}@#{domain.name}"
+    else
+      "#{name}@no-domain"
     end
   end
 
@@ -220,7 +222,6 @@ class Route < ApplicationRecord
   end
 
   class << self
-
     def find_by_name_and_domain(name, domain)
       route = Route.includes(:domain).where(name: name, domains: { name: domain }).first
       if route.nil?
@@ -228,7 +229,5 @@ class Route < ApplicationRecord
       end
       route
     end
-
   end
-
 end
