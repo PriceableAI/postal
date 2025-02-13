@@ -2,6 +2,9 @@
 
 This file contains all the latest changes and updates to Postal.
 
+## [3.3.4-p.0] - Small to make it work with own release and APIs
+
+
 ## [3.3.4](https://github.com/postalserver/postal/compare/3.3.3...3.3.4) (2024-06-20)
 
 
